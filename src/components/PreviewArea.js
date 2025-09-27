@@ -1,122 +1,230 @@
-
-import React, { useState } from "react";
+import React, { useRef, useEffect } from "react";
+import { useApp } from "../context/AppContext";
+import { AnimationEngine } from "../utils/AnimationEngine";
 import CatSprite from "./CatSprite";
+import DogSprite from "./DogSprite";
 
-export default function PreviewArea({ sprites, setSprites, selectedId, setSelectedId }) {
-  const [isPlaying, setIsPlaying] = useState(false);
+export default function PreviewArea() {
+  const { state, dispatch } = useApp();
+  const animationEngineRef = useRef(null);
+  const canvasRef = useRef(null);
 
-  const addSprite = () => {
-    const newId = sprites.length + 1;
-    setSprites([
-      ...sprites,
-      { id: newId, name: `Sprite${newId}`, x: 0, y: 0, direction: 90, stack: [] }
-    ]);
-    setSelectedId(newId);
-  };
+  const activeSprite = state.sprites.find(sprite => sprite.id === state.activeSprite);
 
-  const selectSprite = (id) => {
-    setSelectedId(id);
-  };
+  useEffect(() => {
+    animationEngineRef.current = new AnimationEngine(dispatch, state);
+  }, [dispatch, state]);
 
-  // Animation logic
-  const runAnimations = () => {
-    setIsPlaying(true);
-    // Calculate new positions and directions for all sprites
-    let updatedSprites = sprites.map(sprite => {
-      let x = sprite.x;
-      let y = sprite.y;
-      let direction = sprite.direction;
-      sprite.stack.forEach(block => {
-        if (block.startsWith("Move")) {
-          const steps = parseInt(block.match(/\d+/));
-          x += steps * Math.cos(direction * Math.PI / 180);
-          y += steps * Math.sin(direction * Math.PI / 180);
-        } else if (block.startsWith("Turn left")) {
-          const deg = parseInt(block.match(/\d+/));
-          direction -= deg;
-        } else if (block.startsWith("Turn right")) {
-          const deg = parseInt(block.match(/\d+/));
-          direction += deg;
-        } else if (block.startsWith("Go to x:")) {
-          const coords = block.match(/x:(-?\d+) y:(-?\d+)/);
-          if (coords) {
-            x = parseInt(coords[1]);
-            y = parseInt(coords[2]);
-          }
-        }
-      });
-      return { ...sprite, x, y, direction };
-    });
-
-    // Collision detection and swap stacks
-    for (let i = 0; i < updatedSprites.length; i++) {
-      for (let j = i + 1; j < updatedSprites.length; j++) {
-        const a = updatedSprites[i];
-        const b = updatedSprites[j];
-        // Simple collision: if distance < 50px
-        const dx = a.x - b.x;
-        const dy = a.y - b.y;
-        if (Math.sqrt(dx * dx + dy * dy) < 50) {
-          // Swap stacks
-          const tempStack = a.stack;
-          updatedSprites[i].stack = b.stack;
-          updatedSprites[j].stack = tempStack;
-        }
+  const handlePlay = async () => {
+    if (animationEngineRef.current) {
+      dispatch({ type: 'SET_PLAYING', payload: true });
+      try {
+        await animationEngineRef.current.startAllAnimations();
+      } finally {
+        dispatch({ type: 'SET_PLAYING', payload: false });
       }
     }
+  };
 
-    setSprites(updatedSprites);
-    setTimeout(() => setIsPlaying(false), 1000);
+  const handleStop = () => {
+    if (animationEngineRef.current) {
+      animationEngineRef.current.stopAllAnimations();
+      dispatch({ type: 'SET_PLAYING', payload: false });
+    }
+  };
+
+  const addSprite = () => {
+    dispatch({ type: 'ADD_SPRITE' });
+  };
+
+  const removeSprite = (spriteId) => {
+    if (state.sprites.length > 1) {
+      dispatch({ type: 'REMOVE_SPRITE', payload: spriteId });
+    }
+  };
+
+  const selectSprite = (spriteId) => {
+    dispatch({ type: 'SET_ACTIVE_SPRITE', payload: spriteId });
+  };
+
+  const renderSprite = (sprite) => {
+    const SpriteComponent = sprite.type === 'cat' ? CatSprite : DogSprite;
+    return <SpriteComponent />;
   };
 
   return (
-    <div className="flex-none h-full overflow-y-auto p-2">
-      <div className="mb-4">
-        <div className="font-bold mb-2">Stage</div>
-        <div className="relative bg-gray-100 border rounded-lg w-[400px] h-[300px] mx-auto">
-          {sprites.map(sprite => (
+    <div className="flex-none overflow-y-auto bg-gray-100 border-l border-gray-300" style={{ height: '100%' }}>
+      {/* Stage Area */}
+      <div className="p-3">
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="font-semibold text-gray-800">Stage</h3>
+          <div className="flex space-x-1">
+            <button className="text-xs text-gray-600 hover:bg-gray-200 px-2 py-1 rounded">Small stage</button>
+            <button className="text-xs text-gray-600 hover:bg-gray-200 px-2 py-1 rounded">Large stage</button>
+            <button className="text-xs text-gray-600 hover:bg-gray-200 px-2 py-1 rounded">Full screen</button>
+          </div>
+        </div>
+        
+        {/* Stage Canvas */}
+        <div className="bg-white border border-gray-300 rounded-lg h-64 relative overflow-hidden mb-4">
+          {/* Play/Stop buttons */}
+          <div className="absolute top-2 right-2 flex space-x-1">
+            <button
+              onClick={handlePlay}
+              disabled={state.isPlaying}
+              className="bg-green-500 hover:bg-green-600 disabled:bg-gray-400 text-white px-2 py-1 rounded text-xs"
+            >
+              ▶️
+            </button>
+            <button
+              onClick={handleStop}
+              className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs"
+            >
+              ⏹️
+            </button>
+          </div>
+          
+          {state.sprites.map(sprite => (
             <div
               key={sprite.id}
+              className={`absolute transition-all duration-200 cursor-pointer ${
+                sprite.id === state.activeSprite ? 'ring-2 ring-blue-500' : ''
+              } ${sprite.isAnimating ? 'animate-pulse' : ''}`}
               style={{
-                position: "absolute",
-                left: 200 + sprite.x,
-                top: 150 - sprite.y,
-                transition: "left 0.3s, top 0.3s"
+                left: `${sprite.x + 150}px`,
+                top: `${150 - sprite.y}px`,
+                transform: `rotate(${sprite.direction}deg)`,
+                transformOrigin: 'center'
               }}
+              onClick={() => selectSprite(sprite.id)}
             >
-              <CatSprite />
-              <div className="text-xs text-center">{sprite.name}</div>
+              {renderSprite(sprite)}
+              
+              {/* Speech Bubble */}
+              {animationEngineRef.current?.getSpeechBubble(sprite.id)?.visible && (
+                <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded px-2 py-1 text-xs max-w-32 shadow-sm">
+                  <div className="text-center">
+                    {animationEngineRef.current.getSpeechBubble(sprite.id).message}
+                  </div>
+                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full">
+                    <div className="w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent border-t-gray-300"></div>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
-        <button
-          className={`mt-2 px-4 py-2 rounded bg-blue-500 text-white font-bold shadow ${isPlaying ? 'opacity-50 cursor-not-allowed' : ''}`}
-          onClick={runAnimations}
-          disabled={isPlaying}
-        >
-          ▶ Play
-        </button>
       </div>
-      <div className="flex flex-row gap-4 mb-2">
-        {sprites.map(sprite => (
-          <div
-            key={sprite.id}
-            className={`flex flex-col items-center cursor-pointer ${selectedId === sprite.id ? 'ring-2 ring-blue-500' : ''}`}
-            onClick={() => selectSprite(sprite.id)}
-          >
-            <CatSprite />
-            <div className="text-xs mt-1">{sprite.name}</div>
-            {selectedId === sprite.id && (
-              <div className="text-xs text-blue-500 font-bold">Selected</div>
-            )}
+
+      {/* Sprite Information */}
+      <div className="px-3 pb-3">
+        <div className="bg-white border border-gray-300 rounded-lg p-3 mb-3">
+          <h4 className="font-semibold text-gray-800 mb-2">Sprite</h4>
+          {activeSprite && (
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Show:</span>
+                <span className="text-gray-800">👁️</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Size:</span>
+                <span className="text-gray-800">{activeSprite.size}%</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Direction:</span>
+                <span className="text-gray-800">{activeSprite.direction}°</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">x:</span>
+                <span className="text-gray-800">{Math.round(activeSprite.x)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">y:</span>
+                <span className="text-gray-800">{Math.round(activeSprite.y)}</span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Sprites List */}
+        <div>
+          <div className="flex justify-between items-center mb-2">
+            <h4 className="font-semibold text-gray-800">Sprites</h4>
+            <button
+              onClick={addSprite}
+              className="bg-purple-500 hover:bg-purple-600 text-white px-2 py-1 rounded text-xs"
+            >
+              + Choose a Sprite
+            </button>
           </div>
-        ))}
-        <button
-          className="bg-green-500 text-white px-2 py-1 rounded shadow hover:bg-green-600 h-fit self-center"
-          onClick={addSprite}
-        >
-          + Add Sprite
-        </button>
+          
+          <div className="space-y-2">
+            {state.sprites.map(sprite => (
+              <div
+                key={sprite.id}
+                className={`p-2 border rounded cursor-pointer transition-all ${
+                  sprite.id === state.activeSprite ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
+                }`}
+                onClick={() => selectSprite(sprite.id)}
+              >
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center space-x-2">
+                    <div className={`w-8 h-8 rounded flex items-center justify-center text-white text-sm ${
+                      sprite.type === 'cat' ? 'bg-orange-400' : 'bg-yellow-600'
+                    }`}>
+                      {sprite.type === 'cat' ? '🐱' : '🐶'}
+                    </div>
+                    <span className="text-sm font-medium">{sprite.name}</span>
+                    {sprite.isAnimating && <span className="text-green-500 text-sm">●</span>}
+                  </div>
+                  {state.sprites.length > 1 && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeSprite(sprite.id);
+                      }}
+                      className="text-red-500 hover:text-red-700 text-sm"
+                    >
+                      🗑️
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Stage Backdrops */}
+        <div className="mt-4">
+          <div className="flex justify-between items-center mb-2">
+            <h4 className="font-semibold text-gray-800">Stage</h4>
+            <button className="bg-purple-500 hover:bg-purple-600 text-white px-2 py-1 rounded text-xs">
+              + Choose a Backdrop
+            </button>
+          </div>
+          <div className="bg-white border border-gray-300 rounded p-2">
+            <div className="text-sm text-gray-600">Backdrops 1</div>
+            <div className="w-16 h-12 bg-white border border-gray-300 rounded mt-1"></div>
+          </div>
+        </div>
+
+        {/* Collision Info */}
+        {state.collisions.length > 0 && (
+          <div className="mt-4 p-2 bg-yellow-100 border border-yellow-300 rounded animate-pulse">
+            <div className="flex justify-between items-start">
+              <div>
+                <h4 className="font-semibold text-yellow-800 text-sm">💥 Collision Detected!</h4>
+                <p className="text-xs text-yellow-700">Animations have been swapped!</p>
+              </div>
+              <button
+                onClick={() => dispatch({ type: 'CLEAR_COLLISIONS' })}
+                className="text-yellow-600 hover:text-yellow-800 text-sm"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

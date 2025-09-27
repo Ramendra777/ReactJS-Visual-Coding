@@ -1,20 +1,28 @@
-export default function App() {
-  const [sprites, setSprites] = React.useState([
-    { id: 1, name: "Sprite1", x: 0, y: 0, direction: 90, stack: [] }
-  ]);
-  const [selectedId, setSelectedId] = React.useState(1);
+import React from "react";
+import { AppProvider } from "./context/AppContext";
+import TopNavigation from "./components/TopNavigation";
+import Sidebar from "./components/Sidebar";
+import MidArea from "./components/MidArea";
+import PreviewArea from "./components/PreviewArea";
 
+export default function App() {
   return (
-    <div className="bg-blue-100 pt-6 font-sans">
-      <div className="h-screen overflow-hidden flex flex-row  ">
-        <div className="flex-1 h-screen overflow-hidden flex flex-row bg-white border-t border-r border-gray-200 rounded-tr-xl mr-2">
-          <Sidebar />
-          <MidArea selectedId={selectedId} sprites={sprites} setSprites={setSprites} />
-        </div>
-        <div className="w-1/3 h-screen overflow-hidden flex flex-row bg-white border-t border-l border-gray-200 rounded-tl-xl ml-2">
-          <PreviewArea sprites={sprites} setSprites={setSprites} selectedId={selectedId} setSelectedId={setSelectedId} />
+    <AppProvider>
+      <div className="bg-gray-100 font-sans" style={{ height: '100vh' }}>
+        {/* Top Navigation */}
+        <TopNavigation />
+        
+        {/* Main Content Area */}
+        <div className="flex flex-row" style={{ height: 'calc(100vh - 48px)' }}>
+          <div className="flex-1 flex flex-row bg-white">
+            <Sidebar />
+            <MidArea />
+          </div>
+          <div className="w-80 bg-gray-100">
+            <PreviewArea />
+          </div>
         </div>
       </div>
-    </div>
+    </AppProvider>
   );
 }
