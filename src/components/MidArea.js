@@ -75,42 +75,52 @@ export default function MidArea() {
   };
 
   return (
-    <div 
-      className="flex-1 overflow-auto bg-white"
-      onDragOver={handleDragOver}
-      onDrop={handleDrop}
-      style={{ height: '100%' }}
-    >
-      <div className="min-h-full p-4">
-        <h3 className="text-lg font-semibold mb-4 text-gray-800">
-          Scripts for {activeSprite?.name || 'No Sprite'}
-        </h3>
-        
+    <div className="h-full flex flex-col">
+      {/* Professional Header */}
+      <div className="bg-white border-b border-gray-200 p-4">
+        <h3 className="text-lg font-semibold text-gray-800">Scripts</h3>
+        {activeSprite && (
+          <p className="text-sm text-gray-500 mt-1">
+            {activeSprite.name}
+          </p>
+        )}
+      </div>
+      
+      {/* Professional Scripts Workspace */}
+      <div 
+        className="flex-1 overflow-auto p-4 bg-gray-50"
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+      >
+        {/* Scripts Area */}
         {activeSprite && activeSprite.blocks.length > 0 ? (
-          <div className="space-y-3">
+          <div className="space-y-2">
             {activeSprite.blocks.map((block, index) => (
-              <div key={block.id} className="flex items-center space-x-3">
-                <Block
-                  block={block}
-                  onDragStart={handleBlockDragStart}
-                  onInputChange={handleBlockInputChange}
-                  onDropNested={handleNestedDrop}
-                  nestedBlocks={block.nestedBlocks || []}
-                />
-                <button
-                  onClick={() => removeBlock(index)}
-                  className="text-red-500 hover:text-red-700 text-lg font-bold px-2 py-1 rounded hover:bg-red-50 transition-colors"
-                >
-                  ✕
-                </button>
+              <div key={block.id} className="bg-white rounded-lg p-3 shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200">
+                <div className="flex items-center justify-between">
+                  <Block
+                    block={block}
+                    onDragStart={handleBlockDragStart}
+                    onInputChange={handleBlockInputChange}
+                    onDropNested={handleNestedDrop}
+                    nestedBlocks={block.nestedBlocks || []}
+                  />
+                  <button
+                    onClick={() => removeBlock(index)}
+                    className="text-gray-400 hover:text-red-500 hover:bg-red-50 p-1 rounded transition-all duration-200 ml-2"
+                    title="Delete"
+                  >
+                    ✕
+                  </button>
+                </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="text-gray-500 text-center py-16 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-            <div className="text-4xl mb-4">🎯</div>
-            <p className="text-lg font-medium mb-2">Drag blocks here to create scripts</p>
-            <p className="text-sm">Blocks will appear here when you drag them from the sidebar</p>
+          <div className="bg-white border-2 border-dashed border-gray-300 rounded-lg text-center py-20 text-gray-500">
+            <div className="text-4xl mb-4">📝</div>
+            <h4 className="text-lg font-medium text-gray-700 mb-2">Drag blocks here to code</h4>
+            <p className="text-sm">Your script will appear here</p>
           </div>
         )}
       </div>

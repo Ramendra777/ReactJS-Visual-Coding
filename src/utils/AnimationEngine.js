@@ -209,8 +209,8 @@ export class AnimationEngine {
           Math.pow(sprite1.x - sprite2.x, 2) + Math.pow(sprite1.y - sprite2.y, 2)
         );
 
-        // Collision threshold (adjust based on sprite size)
-        const collisionThreshold = 50;
+        // Touch-based collision threshold (more sensitive)
+        const collisionThreshold = 65; // Increased for easier touching
 
         if (distance < collisionThreshold) {
           // Check if this collision hasn't been processed recently

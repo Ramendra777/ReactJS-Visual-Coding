@@ -8,18 +8,27 @@ import PreviewArea from "./components/PreviewArea";
 export default function App() {
   return (
     <AppProvider>
-      <div className="bg-gray-100 font-sans" style={{ height: '100vh' }}>
-        {/* Top Navigation */}
-        <TopNavigation />
+      <div className="min-h-screen bg-gray-100 font-sans">
+        {/* Professional Header */}
+        <div className="bg-white border-b border-gray-200 shadow-sm">
+          <TopNavigation />
+        </div>
         
-        {/* Main Content Area */}
-        <div className="flex flex-row" style={{ height: 'calc(100vh - 48px)' }}>
-          <div className="flex-1 flex flex-row bg-white">
+        {/* Main Content Area - Professional Layout */}
+        <div className="flex flex-row h-screen pt-16">
+          {/* Left Panel - Block Palette */}
+          <div className="w-80 bg-white border-r border-gray-200 shadow-sm">
             <Sidebar />
-            <MidArea />
           </div>
-          <div className="w-80 bg-gray-100">
+          
+          {/* Center Panel - Stage Area */}
+          <div className="flex-1 bg-gray-50">
             <PreviewArea />
+          </div>
+          
+          {/* Right Panel - Scripts Area */}
+          <div className="w-96 bg-white border-l border-gray-200 shadow-sm">
+            <MidArea />
           </div>
         </div>
       </div>

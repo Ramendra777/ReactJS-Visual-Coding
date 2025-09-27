@@ -2,31 +2,55 @@ import React, { createContext, useContext, useReducer } from 'react';
 
 const AppContext = createContext();
 
-// Initial state
+// Initial state with Hero Feature Demo Setup
 const initialState = {
   sprites: [
     {
       id: 'sprite1',
       name: 'Cat',
       type: 'cat',
-      x: -80,  // Positioned to collide with Dog
+      x: -100,  // Positioned to collide with Dog
       y: 0,
-      direction: 90,
+      direction: 0,  // Facing right (0° = right, 90° = down, 180° = left, 270° = up)
       size: 100,
       visible: true,
-      blocks: [],
+      blocks: [
+        // Character 1: Move 10 steps forward (in facing direction)
+        {
+          id: 'move_demo_1',
+          type: 'move_steps',
+          inputs: [20]
+        },
+        {
+          id: 'say_demo_1',
+          type: 'say_for_seconds',
+          inputs: ['Moving forward!', 1]
+        }
+      ],
       isAnimating: false
     },
     {
       id: 'sprite2',
       name: 'Dog',
       type: 'dog',
-      x: 80,   // Positioned to collide with Cat
+      x: 100,   // Positioned to collide with Cat
       y: 0,
-      direction: 90,
+      direction: 180,  // Facing left
       size: 100,
       visible: true,
-      blocks: [],
+      blocks: [
+        // Character 2: Move 10 steps forward (in facing direction)
+        {
+          id: 'move_demo_2',
+          type: 'move_steps',
+          inputs: [20]
+        },
+        {
+          id: 'say_demo_2',
+          type: 'say_for_seconds',
+          inputs: ['Moving forward!', 1]
+        }
+      ],
       isAnimating: false
     }
   ],
@@ -48,33 +72,62 @@ export const ActionTypes = {
   SET_SPRITE_ANIMATING: 'SET_SPRITE_ANIMATING',
   DETECT_COLLISION: 'DETECT_COLLISION',
   SWAP_ANIMATIONS: 'SWAP_ANIMATIONS',
-  CLEAR_COLLISIONS: 'CLEAR_COLLISIONS'
+  CLEAR_COLLISIONS: 'CLEAR_COLLISIONS',
+  RESET_SPRITES: 'RESET_SPRITES'
 };
 
 // Reducer
 function appReducer(state, action) {
   switch (action.type) {
     case ActionTypes.ADD_SPRITE:
-      const spriteTypes = ['cat', 'dog'];
-      const spriteType = spriteTypes[state.sprites.length % spriteTypes.length];
-      const spriteNames = { cat: 'Cat', dog: 'Dog' };
-      const newSprite = {
-        id: `sprite${Date.now()}`,
-        name: `${spriteNames[spriteType]}${state.sprites.length + 1}`,
-        type: spriteType,
-        x: Math.random() * 200 - 100,
-        y: Math.random() * 200 - 100,
-        direction: 90,
-        size: 100,
-        visible: true,
-        blocks: [],
-        isAnimating: false
-      };
-      return {
-        ...state,
-        sprites: [...state.sprites, newSprite],
-        activeSprite: newSprite.id
-      };
+      const spriteTypes = ['cat', 'dog', 'pikachu', 'jerry'];
+      const availableTypes = spriteTypes.filter(type => 
+        !state.sprites.some(sprite => sprite.type === type)
+      );
+      
+      if (availableTypes.length === 0) {
+        // If all types are used, cycle through them
+        const spriteType = spriteTypes[state.sprites.length % spriteTypes.length];
+        const spriteNames = { cat: 'Cat', dog: 'Dog', pikachu: 'Pikachu', jerry: 'Jerry' };
+        const newSprite = {
+          id: `sprite${Date.now()}`,
+          name: `${spriteNames[spriteType]}${Math.floor(state.sprites.length / spriteTypes.length) + 1}`,
+          type: spriteType,
+          x: Math.random() * 200 - 100,
+          y: Math.random() * 200 - 100,
+          direction: 0, // All sprites face right initially
+          size: 100,
+          visible: true,
+          blocks: [],
+          isAnimating: false
+        };
+        return {
+          ...state,
+          sprites: [...state.sprites, newSprite],
+          activeSprite: newSprite.id
+        };
+      } else {
+        // Use the first available type
+        const spriteType = availableTypes[0];
+        const spriteNames = { cat: 'Cat', dog: 'Dog', pikachu: 'Pikachu', jerry: 'Jerry' };
+        const newSprite = {
+          id: `sprite${Date.now()}`,
+          name: spriteNames[spriteType],
+          type: spriteType,
+          x: Math.random() * 200 - 100,
+          y: Math.random() * 200 - 100,
+          direction: 0, // All sprites face right initially
+          size: 100,
+          visible: true,
+          blocks: [],
+          isAnimating: false
+        };
+        return {
+          ...state,
+          sprites: [...state.sprites, newSprite],
+          activeSprite: newSprite.id
+        };
+      }
 
     case ActionTypes.REMOVE_SPRITE:
       return {
@@ -171,6 +224,20 @@ function appReducer(state, action) {
     case ActionTypes.CLEAR_COLLISIONS:
       return {
         ...state,
+        collisions: []
+      };
+
+    case ActionTypes.RESET_SPRITES:
+      return {
+        ...state,
+        sprites: state.sprites.map(sprite => ({
+          ...sprite,
+          x: sprite.id === 'sprite1' ? -100 : 100,
+          y: 0,
+          direction: sprite.id === 'sprite1' ? 0 : 180, // Cat faces right, Dog faces left
+          isAnimating: false
+        })),
+        isPlaying: false,
         collisions: []
       };
 

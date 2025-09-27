@@ -57,51 +57,11 @@ A React-based visual coding environment inspired by MIT Scratch, featuring drag-
 - **React.js**: Frontend framework
 - **TailwindCSS**: Styling and responsive design
 - **React Context API**: State management
-- **HTML5 Drag & Drop**: Block interaction
+- **HTML5 Drag & Drop**: Block interaction and sprite positioning
 - **SVG**: Sprite rendering
 - **Custom Animation Engine**: Smooth sprite movements
+- **Interactive Sprite Positioning**: Drag sprites to any coordinate
 
-## 🎮 How to Use
-
-### Adding Blocks
-1. **Select a sprite** from the right panel
-2. **Drag blocks** from the left sidebar to the center area
-3. **Configure inputs** by typing in the white boxes
-4. **Run animations** with the play button
-
-### Creating Scripts
-- **Motion Blocks**: Move sprites around the stage
-- **Looks Blocks**: Make sprites speak or think
-- **Control Blocks**: Create loops and repeat actions
-- **Nested Blocks**: Drag blocks inside "Repeat" blocks
-
-### Managing Sprites
-- **Add Sprites**: Click "+ Choose a Sprite" button
-- **Select Sprites**: Click on sprite thumbnails
-- **Remove Sprites**: Click trash icon (minimum 1 sprite required)
-- **View Properties**: See position, size, direction in sprite info panel
-
-## 🎪 Demo Scripts
-
-### Basic Movement Demo
-```
-Cat: move 50 steps → turn 15 degrees → say "Hello!" for 2 seconds
-Dog: move 30 steps → turn -10 degrees → think "Woof!" for 2 seconds
-```
-
-### Collision Demo (Hero Feature)
-```
-Cat: move 100 steps → turn 20 degrees → say "Collision!" for 3 seconds
-Dog: move 80 steps → turn -15 degrees → think "Swapped!" for 3 seconds
-```
-
-### Loop Demo
-```
-Cat: Repeat 3 times:
-  - move 20 steps
-  - turn 30 degrees
-  - say "Loop!" for 1 second
-```
 
 ## 🔧 Installation & Setup
 
@@ -115,18 +75,23 @@ Cat: Repeat 3 times:
 ```
 src/
 ├── components/
-│   ├── BlockSystem.js      # Block definitions and palette
-│   ├── CatSprite.js        # Cat sprite component
-│   ├── DogSprite.js        # Dog sprite component
-│   ├── MidArea.js          # Scripting area
-│   ├── PreviewArea.js      # Stage and sprite management
-│   ├── Sidebar.js          # Block palette container
-│   └── TopNavigation.js    # Top navigation bar
+│   ├── sprites/
+│   │   ├── PikachuSprite.js    # Pikachu sprite component (⚡)
+│   │   └── JerrySprite.js      # Jerry sprite component (🐭)
+│   ├── BlockSystem.js          # Block definitions and palette
+│   ├── CatSprite.js            # Cat sprite component (🐱)
+│   ├── Controls.js             # Play/Stop/Reset controls
+│   ├── DogSprite.js            # Dog sprite component (🐶)
+│   ├── MidArea.js              # Scripts workspace area
+│   ├── PreviewArea.js          # Stage and sprite management
+│   ├── Sidebar.js              # Block palette container
+│   ├── SpriteList.js           # Sprite management component
+│   └── TopNavigation.js        # Professional header navigation
 ├── context/
-│   └── AppContext.js       # Global state management
+│   └── AppContext.js           # Global state management & actions
 ├── utils/
-│   └── AnimationEngine.js  # Animation and collision logic
-└── App.js                  # Main application component
+│   └── AnimationEngine.js      # Animation engine & collision detection
+└── App.js                      # Main application component
 ```
 
 ## 🌟 Key Features Explained
@@ -136,6 +101,13 @@ src/
 - **Threshold Detection**: Collision occurs when distance < sprite size
 - **Animation Swapping**: Exchanges animation queues between colliding sprites
 - **Cooldown System**: 2-second delay prevents rapid collision events
+
+### Interactive Sprite Positioning
+- **Drag & Drop**: Click and drag any sprite to move it around the stage
+- **Real-time Coordinates**: Position updates instantly in the sprite info panel
+- **Boundary Constraints**: Sprites stay within stage boundaries
+- **Visual Feedback**: Cursor changes to indicate draggable sprites
+- **Active Selection**: Dragging automatically selects the sprite
 
 ### Animation Engine
 - **Queue Management**: Processes animation blocks sequentially

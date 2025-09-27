@@ -184,7 +184,7 @@ export function BlockPalette({ onDragStart }) {
     return Object.values(category).map(blockConfig => (
       <div
         key={blockConfig.id}
-        className="cursor-move select-none mb-2"
+        className="cursor-move select-none hover:scale-105 transition-transform duration-200"
         draggable
         onDragStart={(e) => {
           const block = {
@@ -198,11 +198,11 @@ export function BlockPalette({ onDragStart }) {
       >
         {/* Scratch-style puzzle piece block */}
         <div
-          className="text-white px-3 py-2 min-w-[120px] relative"
+          className="text-white px-3 py-2 min-w-[120px] relative hover:shadow-lg transition-shadow duration-200"
           style={{
             backgroundColor: blockConfig.color,
-            borderRadius: '8px',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+            borderRadius: '12px',
+            boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
             border: '1px solid rgba(255,255,255,0.2)'
           }}
         >
@@ -230,72 +230,72 @@ export function BlockPalette({ onDragStart }) {
   };
 
   return (
-    <div className="w-60 flex-none flex flex-col bg-gray-100 border-r border-gray-300" style={{ height: '100%' }}>
-      {/* Tabs */}
-      <div className="flex bg-gray-200 border-b border-gray-300">
-        <div className="px-4 py-2 bg-white border-b-2 border-blue-500 text-sm font-medium text-gray-800">
+    <div className="flex flex-col h-full">
+      {/* Professional Tabs */}
+      <div className="flex bg-gray-100 border-b border-gray-200">
+        <div className="px-4 py-3 bg-white border-b-2 border-blue-500 text-sm font-medium text-gray-800">
           Code
         </div>
-        <div className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 cursor-pointer">
+        <div className="px-4 py-3 text-sm text-gray-600 hover:bg-gray-50 cursor-pointer transition-all duration-200">
           Costumes
         </div>
-        <div className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 cursor-pointer">
+        <div className="px-4 py-3 text-sm text-gray-600 hover:bg-gray-50 cursor-pointer transition-all duration-200">
           Sounds
         </div>
       </div>
       
-      {/* Block Categories */}
-      <div className="p-3 overflow-y-auto flex-1">
+      {/* Professional Block Categories */}
+      <div className="overflow-y-auto flex-1 p-4 space-y-3">
         {/* Motion Category */}
-        <div className="mb-4">
+        <div>
           <div 
-            className="px-3 py-2 text-white text-sm font-medium cursor-pointer mb-2"
-            style={{ backgroundColor: '#4C97FF', borderRadius: '4px' }}
+            className="px-3 py-2 text-white text-sm font-medium cursor-pointer mb-2 rounded"
+            style={{ backgroundColor: '#4C97FF' }}
           >
             Motion
           </div>
-          <div className="ml-2">
+          <div className="space-y-1 ml-2">
             {renderBlocks(BlockTypes.MOTION)}
           </div>
         </div>
         
         {/* Looks Category */}
-        <div className="mb-4">
+        <div>
           <div 
-            className="px-3 py-2 text-white text-sm font-medium cursor-pointer mb-2"
-            style={{ backgroundColor: '#9966FF', borderRadius: '4px' }}
+            className="px-3 py-2 text-white text-sm font-medium cursor-pointer mb-2 rounded"
+            style={{ backgroundColor: '#9966FF' }}
           >
             Looks
           </div>
-          <div className="ml-2">
+          <div className="space-y-1 ml-2">
             {renderBlocks(BlockTypes.LOOKS)}
           </div>
         </div>
         
         {/* Control Category */}
-        <div className="mb-4">
+        <div>
           <div 
-            className="px-3 py-2 text-white text-sm font-medium cursor-pointer mb-2"
-            style={{ backgroundColor: '#FFAB19', borderRadius: '4px' }}
+            className="px-3 py-2 text-white text-sm font-medium cursor-pointer mb-2 rounded"
+            style={{ backgroundColor: '#FFAB19' }}
           >
             Control
           </div>
-          <div className="ml-2">
+          <div className="space-y-1 ml-2">
             {renderBlocks(BlockTypes.CONTROL)}
           </div>
         </div>
         
         {/* Events Category */}
-        <div className="mb-4">
+        <div>
           <div 
-            className="px-3 py-2 text-white text-sm font-medium cursor-pointer mb-2"
-            style={{ backgroundColor: '#FFBF00', borderRadius: '4px' }}
+            className="px-3 py-2 text-white text-sm font-medium cursor-pointer mb-2 rounded"
+            style={{ backgroundColor: '#FFBF00' }}
           >
             Events
           </div>
-          <div className="ml-2">
+          <div className="space-y-1 ml-2">
             <div
-              className="text-white px-3 py-2 min-w-[120px] relative mb-2"
+              className="text-white px-3 py-2 min-w-[120px] relative cursor-move select-none hover:shadow-lg transition-shadow duration-200"
               style={{
                 backgroundColor: '#FFBF00',
                 borderRadius: '8px',
