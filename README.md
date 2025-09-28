@@ -2,6 +2,9 @@
 
 A React-based visual coding environment inspired by MIT Scratch, featuring drag-and-drop programming blocks, sprite animations, and collision detection.
 
+<img width="1897" height="906" alt="image" src="https://github.com/user-attachments/assets/48781f10-7cc4-4363-8004-fce5b4bfe753" />
+
+
 ## 🚀 Quick Demo - Hero Feature (Collision-Based Animation Swap)
 
 **🎯 Perfect Setup**: Both Cat and Dog sprites are already positioned to collide when you run the demo script!
