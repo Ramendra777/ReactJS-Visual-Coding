@@ -6,6 +6,44 @@ import DogSprite from "./DogSprite";
 import PikachuSprite from "./sprites/PikachuSprite";
 import JerrySprite from "./sprites/JerrySprite";
 
+// Speech Bubble Component
+function SpeechBubble({ bubble }) {
+  const isThinking = bubble.type === 'think';
+  
+  return (
+    <div className={`absolute -top-20 left-1/2 transform -translate-x-1/2 px-4 py-3 text-sm max-w-48 shadow-lg animate-bounce ${
+      isThinking 
+        ? 'bg-purple-100 border-2 border-purple-300 rounded-3xl' 
+        : 'bg-white/95 backdrop-blur-sm border-2 border-blue-200 rounded-xl'
+    }`}>
+      <div className="text-center font-medium text-gray-800 flex items-center justify-center">
+        {isThinking ? (
+          <span className="mr-2 text-purple-600">💭</span>
+        ) : (
+          <span className="mr-2 text-blue-600">💬</span>
+        )}
+        {bubble.message}
+      </div>
+      
+      {/* Speech bubble tail */}
+      {!isThinking && (
+        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full">
+          <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-blue-200"></div>
+        </div>
+      )}
+      
+      {/* Think bubble dots */}
+      {isThinking && (
+        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full flex space-x-1 mt-1">
+          <div className="w-2 h-2 bg-purple-300 rounded-full animate-bounce" style={{animationDelay: '0ms'}}></div>
+          <div className="w-1.5 h-1.5 bg-purple-300 rounded-full animate-bounce" style={{animationDelay: '150ms'}}></div>
+          <div className="w-1 h-1 bg-purple-300 rounded-full animate-bounce" style={{animationDelay: '300ms'}}></div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function PreviewArea() {
   const { state, dispatch } = useApp();
   const animationEngineRef = useRef(null);
@@ -215,16 +253,11 @@ export default function PreviewArea() {
                 →
               </div>
               
-              {/* Enhanced Speech Bubble */}
+              {/* Enhanced Speech/Think Bubble */}
               {animationEngineRef.current?.getSpeechBubble(sprite.id)?.visible && (
-                <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm border-2 border-blue-200 rounded-xl px-3 py-2 text-sm max-w-40 shadow-lg animate-bounce">
-                  <div className="text-center font-medium text-gray-800">
-                    {animationEngineRef.current.getSpeechBubble(sprite.id).message}
-                  </div>
-                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full">
-                    <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-blue-200"></div>
-                  </div>
-                </div>
+                <SpeechBubble 
+                  bubble={animationEngineRef.current.getSpeechBubble(sprite.id)} 
+                />
               )}
             </div>
           ))}

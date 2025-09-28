@@ -15,16 +15,21 @@ const initialState = {
       size: 100,
       visible: true,
       blocks: [
-        // Character 1: Move 10 steps forward (in facing direction)
+        // Character 1: Demonstrate Say animation
+        {
+          id: 'say_demo_1',
+          type: 'say_for_seconds',
+          inputs: ['Hello! I can speak! 💬', 2]
+        },
         {
           id: 'move_demo_1',
           type: 'move_steps',
           inputs: [20]
         },
         {
-          id: 'say_demo_1',
-          type: 'say_for_seconds',
-          inputs: ['Moving forward!', 1]
+          id: 'think_demo_1',
+          type: 'think_for_seconds',
+          inputs: ['Hmm... where should I go? 🤔', 2]
         }
       ],
       isAnimating: false
@@ -39,7 +44,12 @@ const initialState = {
       size: 100,
       visible: true,
       blocks: [
-        // Character 2: Move 10 steps forward (in facing direction)
+        // Character 2: Demonstrate Think animation
+        {
+          id: 'think_demo_2',
+          type: 'think_for_seconds',
+          inputs: ['I wonder what Cat is thinking... 💭', 2]
+        },
         {
           id: 'move_demo_2',
           type: 'move_steps',
@@ -48,7 +58,7 @@ const initialState = {
         {
           id: 'say_demo_2',
           type: 'say_for_seconds',
-          inputs: ['Moving forward!', 1]
+          inputs: ['Woof! Let\'s play! 🐕', 2]
         }
       ],
       isAnimating: false
