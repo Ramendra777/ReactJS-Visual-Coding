@@ -4,6 +4,18 @@ A React-based visual coding environment inspired by MIT Scratch, featuring drag-
 
 <img width="1897" height="906" alt="image" src="https://github.com/user-attachments/assets/48781f10-7cc4-4363-8004-fce5b4bfe753" />
 
+---
+
+## 🎥 Demo Video
+▶️ [Watch the Demo on Google Drive](https://drive.google.com/drive/folders/1o4zb-nmP4VVD0IogR8DC0tSuS1ye2jDo?usp=sharing)  
+
+---
+
+## 🌐 Live Demo
+🔗 [Deployed on Vercel](https://react-js-visual-coding.vercel.app/)  
+
+---
+
 
 ## 🚀 Quick Demo - Hero Feature (Collision-Based Animation Swap)
 
