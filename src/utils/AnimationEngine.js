@@ -6,6 +6,12 @@ export class AnimationEngine {
     this.state = state;
     this.animationIntervals = new Map();
     this.speechBubbles = new Map();
+    this.lastCollisionTime = new Map();
+  }
+
+  // Update the state reference (called from PreviewArea when state changes)
+  updateState(newState) {
+    this.state = newState;
   }
 
   // Execute a single block
@@ -106,6 +112,10 @@ export class AnimationEngine {
           y: sprite.y + deltaY * (i + 1)
         }
       });
+      
+      // Check for collisions after each position update
+      this.checkCollisions();
+      
       await this.delay(stepDuration);
     }
   }
@@ -130,6 +140,10 @@ export class AnimationEngine {
           direction: sprite.direction + deltaDegrees * (i + 1)
         }
       });
+      
+      // Check for collisions during turn animation
+      this.checkCollisions();
+      
       await this.delay(stepDuration);
     }
   }
@@ -154,6 +168,10 @@ export class AnimationEngine {
           y: sprite.y + deltaY * (i + 1)
         }
       });
+      
+      // Check for collisions during goToXY animation
+      this.checkCollisions();
+      
       await this.delay(stepDuration);
     }
   }
@@ -161,13 +179,45 @@ export class AnimationEngine {
   // Looks animations
   async sayForSeconds(spriteId, message, seconds) {
     this.showSpeechBubble(spriteId, message, 'say');
-    await this.delay(seconds * 1000);
+    
+    // Check for collisions during speech bubble display
+    const checkInterval = 100; // Check every 100ms
+    const totalChecks = Math.floor((seconds * 1000) / checkInterval);
+    
+    for (let i = 0; i < totalChecks; i++) {
+      this.checkCollisions();
+      await this.delay(checkInterval);
+    }
+    
+    // Handle remaining time
+    const remainingTime = (seconds * 1000) % checkInterval;
+    if (remainingTime > 0) {
+      this.checkCollisions();
+      await this.delay(remainingTime);
+    }
+    
     this.hideSpeechBubble(spriteId);
   }
 
   async thinkForSeconds(spriteId, message, seconds) {
     this.showSpeechBubble(spriteId, message, 'think');
-    await this.delay(seconds * 1000);
+    
+    // Check for collisions during thought bubble display
+    const checkInterval = 100; // Check every 100ms
+    const totalChecks = Math.floor((seconds * 1000) / checkInterval);
+    
+    for (let i = 0; i < totalChecks; i++) {
+      this.checkCollisions();
+      await this.delay(checkInterval);
+    }
+    
+    // Handle remaining time
+    const remainingTime = (seconds * 1000) % checkInterval;
+    if (remainingTime > 0) {
+      this.checkCollisions();
+      await this.delay(remainingTime);
+    }
+    
     this.hideSpeechBubble(spriteId);
   }
 
@@ -197,6 +247,7 @@ export class AnimationEngine {
 
   // Collision detection
   checkCollisions() {
+    // Get the latest state from the store instead of using cached state
     const sprites = this.state.sprites;
     const collisions = [];
 

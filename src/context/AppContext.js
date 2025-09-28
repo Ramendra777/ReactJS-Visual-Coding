@@ -2,7 +2,7 @@ import React, { createContext, useContext, useReducer } from 'react';
 
 const AppContext = createContext();
 
-// Initial state with Hero Feature Demo Setup
+// Initial state with Enhanced Hero Feature Demo Setup
 const initialState = {
   sprites: [
     {
@@ -15,21 +15,21 @@ const initialState = {
       size: 100,
       visible: true,
       blocks: [
-        // Character 1: Demonstrate Say animation
+        // Character 1: Cat's original behavior
         {
           id: 'say_demo_1',
           type: 'say_for_seconds',
-          inputs: ['Hello! I can speak! 💬', 2]
+          inputs: ['I am a Cat! Meow! 🐱', 1]
         },
         {
-          id: 'move_demo_1',
-          type: 'move_steps',
-          inputs: [20]
+          id: 'goto_demo_1',
+          type: 'go_to_xy',
+          inputs: [30, 0]
         },
         {
           id: 'think_demo_1',
           type: 'think_for_seconds',
-          inputs: ['Hmm... where should I go? 🤔', 2]
+          inputs: ['Cat thoughts... 🐱💭', 1]
         }
       ],
       isAnimating: false
@@ -44,21 +44,21 @@ const initialState = {
       size: 100,
       visible: true,
       blocks: [
-        // Character 2: Demonstrate Think animation
-        {
-          id: 'think_demo_2',
-          type: 'think_for_seconds',
-          inputs: ['I wonder what Cat is thinking... 💭', 2]
-        },
-        {
-          id: 'move_demo_2',
-          type: 'move_steps',
-          inputs: [20]
-        },
+        // Character 2: Dog's original behavior
         {
           id: 'say_demo_2',
           type: 'say_for_seconds',
-          inputs: ['Woof! Let\'s play! 🐕', 2]
+          inputs: ['I am a Dog! Woof! 🐶', 1]
+        },
+        {
+          id: 'goto_demo_2',
+          type: 'go_to_xy',
+          inputs: [-30, 0]
+        },
+        {
+          id: 'think_demo_2',
+          type: 'think_for_seconds',
+          inputs: ['Dog thoughts... 🐶💭', 1]
         }
       ],
       isAnimating: false
@@ -216,19 +216,38 @@ function appReducer(state, action) {
 
     case ActionTypes.SWAP_ANIMATIONS:
       const { sprite1Id, sprite2Id } = action.payload;
-      const sprite1 = state.sprites.find(s => s.id === sprite1Id);
-      const sprite2 = state.sprites.find(s => s.id === sprite2Id);
+      const sprite1Index = state.sprites.findIndex(s => s.id === sprite1Id);
+      const sprite2Index = state.sprites.findIndex(s => s.id === sprite2Id);
+      
+      if (sprite1Index === -1 || sprite2Index === -1) return state;
+      
+      const newSprites = [...state.sprites];
+      const sprite1Blocks = [...newSprites[sprite1Index].blocks];
+      const sprite2Blocks = [...newSprites[sprite2Index].blocks];
+      
+      // Enhanced Hero Feature: Swap BOTH animations AND sprite types!
+      const sprite1Type = newSprites[sprite1Index].type;
+      const sprite1Name = newSprites[sprite1Index].name;
+      const sprite2Type = newSprites[sprite2Index].type;
+      const sprite2Name = newSprites[sprite2Index].name;
+      
+      // Swap animations AND visual appearance
+      newSprites[sprite1Index] = {
+        ...newSprites[sprite1Index],
+        blocks: sprite2Blocks,
+        type: sprite2Type,    // Visual swap!
+        name: sprite2Name     // Name swap too!
+      };
+      newSprites[sprite2Index] = {
+        ...newSprites[sprite2Index],
+        blocks: sprite1Blocks,
+        type: sprite1Type,    // Visual swap!
+        name: sprite1Name     // Name swap too!
+      };
       
       return {
         ...state,
-        sprites: state.sprites.map(sprite => {
-          if (sprite.id === sprite1Id) {
-            return { ...sprite, blocks: sprite2.blocks };
-          } else if (sprite.id === sprite2Id) {
-            return { ...sprite, blocks: sprite1.blocks };
-          }
-          return sprite;
-        })
+        sprites: newSprites
       };
 
     case ActionTypes.CLEAR_COLLISIONS:

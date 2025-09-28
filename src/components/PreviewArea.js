@@ -57,7 +57,12 @@ export default function PreviewArea() {
   const activeSprite = state.sprites.find(sprite => sprite.id === state.activeSprite);
 
   useEffect(() => {
-    animationEngineRef.current = new AnimationEngine(dispatch, state);
+    if (!animationEngineRef.current) {
+      animationEngineRef.current = new AnimationEngine(dispatch, state);
+    } else {
+      // Update the state reference in the existing engine
+      animationEngineRef.current.updateState(state);
+    }
   }, [dispatch, state]);
 
   const handlePlay = async () => {
@@ -332,26 +337,29 @@ export default function PreviewArea() {
           <div className="flex justify-between items-start">
             <div className="flex-1">
               <h4 className="font-semibold text-orange-800 text-lg flex items-center mb-2">
-                💥 <span className="ml-2">Sprites Touched - Hero Feature Activated!</span>
+                🎭 <span className="ml-2">ULTIMATE HERO FEATURE - SPRITE TRANSFORMATION!</span>
               </h4>
               <p className="text-orange-700 text-sm mb-3">
-                Hero Feature: Animation blocks have been swapped between touching sprites
+                Enhanced Hero Feature: Complete sprite transformation on collision!
               </p>
               
               <div className="bg-white rounded-lg p-3 mb-3">
                 <div className="text-center text-sm">
-                  <div className="font-medium text-gray-800 mb-2">🔄 Animation Swap Complete!</div>
-                  <div className="text-gray-600">
-                    All sprites that touched each other have exchanged their animation blocks.
+                  <div className="font-medium text-gray-800 mb-2">🔄 COMPLETE TRANSFORMATION!</div>
+                  <div className="text-gray-600 mb-2">
+                    🎯 <strong>Animation Blocks Swapped</strong> - Behaviors exchanged
                   </div>
-                  <div className="text-gray-600 mt-1">
-                    Watch how they now move with each other's behaviors!
+                  <div className="text-gray-600 mb-2">
+                    🎭 <strong>Visual Appearance Swapped</strong> - Cat becomes Dog, Dog becomes Cat!
+                  </div>
+                  <div className="text-gray-600">
+                    ✨ <strong>Names Swapped</strong> - Complete identity transformation
                   </div>
                 </div>
               </div>
               
               <p className="text-orange-700 text-sm font-medium">
-                🎯 Assignment Hero Feature: Touch-Based Animation Swap System
+                🚀 Enhanced Hero Feature: Complete Sprite Transformation System
               </p>
             </div>
             <button
