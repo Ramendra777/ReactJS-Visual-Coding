@@ -15,21 +15,21 @@ const initialState = {
       size: 100,
       visible: true,
       blocks: [
-        // Character 1: Cat's original behavior
+        // Character 1: Cat's original actions
         {
           id: 'say_demo_1',
           type: 'say_for_seconds',
-          inputs: ['I am a Cat! Meow! 🐱', 1]
+          inputs: ['Cat says: Moving right! 🐱', 1]
         },
         {
           id: 'goto_demo_1',
           type: 'go_to_xy',
-          inputs: [30, 0]
+          inputs: [50, 0]
         },
         {
           id: 'think_demo_1',
           type: 'think_for_seconds',
-          inputs: ['Cat thoughts... 🐱💭', 1]
+          inputs: ['Cat thinks: I love going right! 💭', 1]
         }
       ],
       isAnimating: false
@@ -44,21 +44,21 @@ const initialState = {
       size: 100,
       visible: true,
       blocks: [
-        // Character 2: Dog's original behavior
+        // Character 2: Dog's original actions
         {
           id: 'say_demo_2',
           type: 'say_for_seconds',
-          inputs: ['I am a Dog! Woof! 🐶', 1]
+          inputs: ['Dog says: Moving left! 🐶', 1]
         },
         {
           id: 'goto_demo_2',
           type: 'go_to_xy',
-          inputs: [-30, 0]
+          inputs: [-50, 0]
         },
         {
           id: 'think_demo_2',
           type: 'think_for_seconds',
-          inputs: ['Dog thoughts... 🐶💭', 1]
+          inputs: ['Dog thinks: I love going left! 💭', 1]
         }
       ],
       isAnimating: false
@@ -225,24 +225,14 @@ function appReducer(state, action) {
       const sprite1Blocks = [...newSprites[sprite1Index].blocks];
       const sprite2Blocks = [...newSprites[sprite2Index].blocks];
       
-      // Enhanced Hero Feature: Swap BOTH animations AND sprite types!
-      const sprite1Type = newSprites[sprite1Index].type;
-      const sprite1Name = newSprites[sprite1Index].name;
-      const sprite2Type = newSprites[sprite2Index].type;
-      const sprite2Name = newSprites[sprite2Index].name;
-      
-      // Swap animations AND visual appearance
+      // Hero Feature: Swap ONLY animation blocks/actions (keep visual appearance)
       newSprites[sprite1Index] = {
         ...newSprites[sprite1Index],
-        blocks: sprite2Blocks,
-        type: sprite2Type,    // Visual swap!
-        name: sprite2Name     // Name swap too!
+        blocks: sprite2Blocks  // Only swap the animation blocks
       };
       newSprites[sprite2Index] = {
         ...newSprites[sprite2Index],
-        blocks: sprite1Blocks,
-        type: sprite1Type,    // Visual swap!
-        name: sprite1Name     // Name swap too!
+        blocks: sprite1Blocks  // Only swap the animation blocks
       };
       
       return {

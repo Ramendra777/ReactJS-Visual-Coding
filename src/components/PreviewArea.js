@@ -337,29 +337,29 @@ export default function PreviewArea() {
           <div className="flex justify-between items-start">
             <div className="flex-1">
               <h4 className="font-semibold text-orange-800 text-lg flex items-center mb-2">
-                🎭 <span className="ml-2">ULTIMATE HERO FEATURE - SPRITE TRANSFORMATION!</span>
+                💥 <span className="ml-2">HERO FEATURE - ANIMATION SWAP!</span>
               </h4>
               <p className="text-orange-700 text-sm mb-3">
-                Enhanced Hero Feature: Complete sprite transformation on collision!
+                Hero Feature: Animation blocks exchanged between colliding sprites!
               </p>
               
               <div className="bg-white rounded-lg p-3 mb-3">
                 <div className="text-center text-sm">
-                  <div className="font-medium text-gray-800 mb-2">🔄 COMPLETE TRANSFORMATION!</div>
+                  <div className="font-medium text-gray-800 mb-2">🔄 ANIMATION BLOCKS SWAPPED!</div>
                   <div className="text-gray-600 mb-2">
-                    🎯 <strong>Animation Blocks Swapped</strong> - Behaviors exchanged
+                    🎯 <strong>Actions Exchanged</strong> - Sprites now perform each other's behaviors
                   </div>
                   <div className="text-gray-600 mb-2">
-                    🎭 <strong>Visual Appearance Swapped</strong> - Cat becomes Dog, Dog becomes Cat!
+                    🎭 <strong>Visual Appearance Preserved</strong> - Cat still looks like Cat, Dog still looks like Dog
                   </div>
                   <div className="text-gray-600">
-                    ✨ <strong>Names Swapped</strong> - Complete identity transformation
+                    ✨ <strong>Behavior Swap</strong> - Cat performs Dog's actions and vice versa
                   </div>
                 </div>
               </div>
               
               <p className="text-orange-700 text-sm font-medium">
-                🚀 Enhanced Hero Feature: Complete Sprite Transformation System
+                🎯 Assignment Hero Feature: Action-Based Animation Swap System
               </p>
             </div>
             <button
